@@ -2,9 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body, #root{
-  width: 100vw;
-  height: 100vh;
+body,
+#root {
+  width: 100dvw;
+  height: 100dvh;
   margin: 0;
   padding: 0;
   box-sizing: border-box;

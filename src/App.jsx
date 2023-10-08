@@ -1,42 +1,52 @@
-import { useEffect, useState, useRef } from 'react'
-import './index.css'
-import SearchBox from './SearchBox';
-import WeatherDisplay from './WeatherDisplay';
-import anime from 'animejs/lib/anime.es.js';
-
+import { useEffect, useState, useRef } from "react";
+import "./index.css";
+import SearchBox from "./SearchBox";
+import WeatherDisplay from "./WeatherDisplay";
 
 function App() {
+  const [countryData, setCountryData] = useState(null);
   const [weatherData, setWeatherData] = useState({});
+  const [searchInputData, setSearchInputData] = useState("");
+  const [countrySelected, setCountrySelected] = useState(false);
   const displayAnimation = useRef();
-  
-  useEffect(() => {
-    displayAnimation.current = anime.timeline({autoplay: false, loop: false});
-
-    displayAnimation.current.add({
-      targets: ".LocationInfo",
-      translateY: ["-50vh", 0],
-      duration: 600,
-      easing: "easeOutSine"
-    }).add({
-      targets: ".WeatherInfo > div",
-      scale: [0, 1],
-      duration: 200,
-      delay: anime.stagger(100, {grid: [3, 1], from: "center"}),
-      easing: "spring"
-    })
-  }, [])
 
   useEffect(() => {
-    if(!weatherData) return;
-    displayAnimation.current.play();
-  }, [weatherData])
+    fetch(
+      "https://restcountries.com/v3.1/independent?status=true&fields=name,capital,flags,population"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setCountryData(data);
+        }
+      })
+      .catch((error) => console.log("ERROR COUNTRY"));
+  }, []);
+
+  useEffect(() => {
+    if (countrySelected) {
+      setWeatherData({});
+      setCountrySelected(false);
+    }
+  }, [searchInputData]);
 
   return (
-    <div className='w-full h-full p-10 flex flex-col gap-12 items-center'>
-      <WeatherDisplay weatherData={weatherData} />
-      <SearchBox setWeatherData={setWeatherData} />
+    <div className="w-full h-full p-10 flex flex-col gap-2">
+      <SearchBox
+        setWeatherData={setWeatherData}
+        setCountrySelected={setCountrySelected}
+        countrySelected={countrySelected}
+        setSearchInputData={setSearchInputData}
+      />
+      {countryData ? (
+        <WeatherDisplay
+          weatherData={weatherData}
+          countryData={countryData}
+          countrySelected={countrySelected}
+        />
+      ) : null}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
