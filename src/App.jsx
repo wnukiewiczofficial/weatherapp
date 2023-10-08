@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import "./index.css";
 import SearchBox from "./SearchBox";
 import WeatherDisplay from "./WeatherDisplay";
@@ -8,7 +8,6 @@ function App() {
   const [weatherData, setWeatherData] = useState({});
   const [searchInputData, setSearchInputData] = useState("");
   const [countrySelected, setCountrySelected] = useState(false);
-  const displayAnimation = useRef();
 
   useEffect(() => {
     fetch(
